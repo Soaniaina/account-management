@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{/layout/layout-page}">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="UTF-8">
+	<title>Account Page</title>
+</head>
+<body>
+	<div layout:fragment="content-body">
+		<h2 class="text-center my-3" th:if="${name}">Je me nomme <th:block th:text="${name}" /></h2>
+<!--		<h4 class="text-center text-info"><th:block th:text="${#request.servletPath.concat('get-account')}" /></h4>-->
+		<div class="row">
+			<div class="col-4 py-3">
+				<div class="card border-dark mb-3 w-40 shadow" >
+					<div class="card-header">Search an account : </div>
+					<div class="card-body text-dark">
+						<form class="d-flex px-1 py-2" th:action="@{/bank/get-account}" method="get">
+							<input class="form-control mx-auto" type="search" name="codeAcc" th:value="${codeAccount}?${codeAccount}" placeholder="Enter the code of the account...." aria-label="Search">
+							<button class="btn btn-sm btn-outline-dark ms-3 w-50" type="submit">Search</button>
+						</form>
+						<p class="text-center text-danger fw-bold fst-italic" th:if="${error}"><th:block th:text="${error.message}" /></p>
+					</div>
+				</div>
+				<div class="card border-dark mb-3 shadow" th:if="${accountF}" >
+					<div class="card-header">Account's Information</div>
+					<div class="card-body text-dark">
+						<h6 class="card-title"><span class="fw-bold fst-italic">Customer :</span> <th:block th:text="${accountF.customer.name}" /> </h6>
+						<p class="card-text"> <span class="fw-bold fst-italic">Account code :</span> <th:block th:text="${accountF.code}" /> </p>
+						<p class="card-text"> <span class="fw-bold fst-italic">Account Sold :</span> <th:block th:text="${accountF.solde}" /> Ar</p>
+						<p class="card-text"> <span class="fw-bold fst-italic">Created at :</span> <th:block th:text="${#temporals.format(accountF.createdAt, 'dd MMM yyyy à HH:mm:ss')}" /> </p>
+						<p class="card-text"> <span class="fw-bold fst-italic">Type :</span> <th:block th:text="${accountF.class.simpleName}" /> </p>
+
+						<p class="card-text" th:if="${#strings.equalsIgnoreCase(accountF.class.simpleName, 'SavingsAccount')}"> <span class="fw-bold fst-italic">Taux :</span> <th:block th:text="${accountF.taux}" /> % </p>
+						<p class="card-text" th:if="${#strings.equalsIgnoreCase(accountF.class.simpleName, 'CurrentAccount')}"> <span class="fw-bold fst-italic">Découvert :</span> <th:block th:text="${accountF.decouvert}" /> Ar</p>
+
+					</div>
+				</div>
+			</div>
+			<div class="col-8 py-3">
+				<div class="card border-dark mb-3 w-40 shadow" th:if="${accountF}" >
+					<div class="card-header">Operation</div>
+					<div class="card-body text-dark">
+						<form th:action="@{/bank/save-operation}" method="post" >
+							<div class="mb-2">
+								<input type="hidden" name="accountCode" th:value="${codeAccount}" />
+								<p class="card-title text-center">Please choose one of this operation </p>
+								<div class="d-flex justify-content-around">
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="operationType" id="versementRd" value="versement">
+										<label class="form-check-label" for="versementRd">Versement</label>
+									</div>
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="operationType" id="retraitRd" value="retrait">
+										<label class="form-check-label" for="retraitRd">Retrait</label>
+									</div>
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="operationType" id="virementRd" value="virement">
+										<label class="form-check-label" for="virementRd">Virement</label>
+									</div>
+								</div>
+							</div>
+
+							<div class="row gy-2 gx-5 align-items-center justify-content-center mt-3" >
+								<div class="col-auto" id="versementBlock" style="display: none">
+									<label for="destAccount" class="col-form-label" id="labelDestAccount">Vers : </label>
+									<div class="input-group">
+										<input type="text" class="form-control" id="destAccount" name="accountCodeTwo" placeholder="Account code...">
+									</div>
+								</div>
+								<div class="col-auto" id="amountBlock" style="display: none">
+									<label for="amount" class="col-form-label" id="labelAmount">Amount : </label>
+									<div class="input-group">
+										<input type="text" class="form-control" name="amount" id="amount" placeholder="......." pattern="[0-9.]+" title="Veuillez entrer des données numériques sur cette champs...">
+										<div class="input-group-text">Ar</div>
+									</div>
+								</div>
+								<div class="text-center mt-3" style="display: none" id="btnSave">
+									<button type="submit" class="btn btn-sm btn-outline-info w-40">Save</button>
+								</div>
+								<p class="text-danger text-center fw-bold" id="errorMsg" th:if="${#request.getParameter('error')}"><th:block th:text="${#request.getParameter('error')}" /></p>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="card border-dark mb-3 shadow" th:if="${accountF}" >
+					<div class="card-header">List of operation</div>
+					<div class="card-body text-dark">
+						<h6 class="card-title text-center fw-bold mb-3">All Operation in the <th:block th:text="${codeAccount}" /></h6>
+						<table class="table table-hover table-responsive table-bordered border-primary">
+							<thead class="text-center">
+								<tr>
+									<th scope="col">Number</th>
+									<th scope="col">Type</th>
+									<th scope="col">Solde</th>
+									<th scope="col">Executed at</th>
+								</tr>
+							</thead>
+							<tbody class="table-group-divider">
+								<tr th:if="${#lists.isEmpty(operations)}">
+									<td class="text-center fw-bold text-danger fw-bold" colspan="4">Pas de resultats !!!!</td>
+								</tr>
+								<tr class="text-center" th:each="operation: ${operations}">
+									<th scope="row"> <th:block th:text="${operation.numero}" /> </th>
+									<td> <th:block th:text="${operation.class.simpleName}" /> </td>
+									<td> <th:block th:text="${operation.solde}" /> Ar </td>
+									<td> <th:block th:text="${#dates.format(operation.dateOperation, 'dd/MM/yyyy HH:mm:ss')}" /> </td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="offset-3 col-md-6">
+							<nav>
+								<ul class="pagination pagination-sm">
+									<li th:each="page,status:${pages}" class="page-item" th:classappend="${currentPage}==${status.index}? 'active'">
+										<a th:href="@{/bank/get-account(codeAcc=${accountF.code},page=${status.index})}" class="page-link" th:text="${status.index}"></a>
+									</li>
+								</ul>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<th:block layout:fragment="scripts">
+		<script type="text/javascript">
+			$(function () {
+
+                $("#versementRd").on("change", function () {
+					$("#versementBlock").css("display","none");
+                    $("#amountBlock").css("display","block");
+                    $("#labelAmount").text("Montant à verser :")
+	                $("#btnSave").css("display","block")
+                    $("#errorMsg").css("display","none")
+                    $("#btnSave button").text("Valider le versement")
+                })
+                $("#retraitRd").on("change", function () {
+                    $("#versementBlock").css("display","none");
+                    $("#amountBlock").css("display","block");
+                    $("#btnSave").css("display","block")
+                    $("#errorMsg").css("display","none")
+                    $("#labelAmount").text("Montant à retirer :")
+                    $("#btnSave button").text("Valider le retrait")
+                })
+                $("#virementRd").on("change", function () {
+                    $("#versementBlock").css("display","block");
+                    $("#amountBlock").css({display: "block"});
+                    $("#btnSave").css("display","block")
+                    $("#labelAmount").text("Montant à virer :")
+                    $("#btnSave button").text("Valider le virement")
+	                $("#errorMsg").css("display","none")
+                })
+            });
+		</script>
+	</th:block>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" class="h-100" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{/layout/layout-page}">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Exception Handler</title>
+</head>
+<body>
+	<div layout:fragment="content-body">
+		<h2 class="text-center text-danger mb-2">[[${status}]]</h2>
+		<h4 class="text-center text-dark">[[${status == 404 ? 'Ressource demandée introuvable !!' : 'Erreur au niveau du Serveur'}]]</h4>
+		<p class="text-center mt-5 text-primary">
+			<a href="javascript:history.back()" class="btn btn-sm btn-outline-info w-25">RETOUR</a>
+		</p>
+	</div>
+</body>
+</html>

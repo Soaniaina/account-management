@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" class="h-100" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{/layout/layout-page}">
+<head>
+	<title>Account Management Project</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Home</title>
+</head>
+<body>
+	<div layout:fragment="content-body">
+		<h1 class="text-center text-secondary my-5"><th:block th:text="#{home.brand}" /></h1>
+		<h6 class="text-center text-info mb-5"><th:block th:text="#{home.text}" /></h6>
+	</div>
+</body>
+</html>

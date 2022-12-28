@@ -1,0 +1,9 @@
+.hover-bg-red:focus, .hover-bg-red:hover{
+    background-color:#ff4136
+}
+.hover-bg-light-red-d:focus, .hover-bg-light-red-d:hover{
+    background-color:#ff725c
+}
+.hover-bg-orange:focus, .hover-bg-orange:hover{
+    background-color:#ff6300
+}

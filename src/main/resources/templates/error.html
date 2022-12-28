@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" class="h-100" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{/layout/layout-page}">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Error</title>
+<body>
+    <div layout:fragment="content-body">
+	    <div class="alert alert-danger align-items-center my-5" role="alert">
+            <h3 class="display-4 text-center">Oops, something went wrong!</h3>
+            <p class="lead text-center fw-bold mt-3"><th:block th:text="${status +' '+ error}"></th:block></p>
+	    </div>
+    </div>
+</body>
+</html>
